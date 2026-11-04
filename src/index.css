@@ -1,0 +1,11 @@
+@import "tailwindcss";
+
+:root{
+  font-family: "Segue UI", Arial, sans-serif;
+  color: #19312d;
+  background-color: #f7f1f8;
+}
+
+body{
+  margin: 0;
+}
