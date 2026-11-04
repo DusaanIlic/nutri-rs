@@ -1,9 +1,10 @@
 import CalorieSummary from "./components/CalorieSummary";
 import MacroProgress from "./components/MacroProgress";
+import { useState } from "react";
 
 function App(){
   const dailyCalories = 2100;
-  const consumedCalories = 1750;
+  const [consumedCalories, setConsumedCalories] = useState(1750);
 
   return(
     <main className="min-h-screen bg-[#f7faf8] px-4 py-8 sm:px-8">
@@ -25,6 +26,33 @@ function App(){
           target={dailyCalories}
           consumed={consumedCalories}
         />
+
+        <div className="mt-4 flex gap-3">
+          <button 
+            onClick={() => setConsumedCalories(
+              previous => previous + 100
+            )}
+            className="cursor-pointer rounded-xl bg-[#169b74] px-5 py-3 text-white transition-colors hover:bg-[#128563]"
+          >
+            +100 kcal
+          </button>
+
+          <button 
+            onClick={() => setConsumedCalories(
+              previous => Math.max(0, previous - 100)
+            )}
+            className="rounded-xl border border-gray-300 px-5 py-3 bg-white cursor-pointer transition-colors hover:bg-[#F3F4F6]"
+          >
+            -100 kcal
+          </button>
+
+          <button 
+            onClick={() => setConsumedCalories(1750)}
+            className="rounded-xl border border-gray-300 px-5 py-3 bg-white cursor-pointer transition-colors hover:bg-[#F3F4F6]"
+          >
+            Reset
+        </button>
+        </div>
 
         <section className="mt-6 rounded-3xl bg-white p-6 shadow-sm sm:p-8">
           <h2 className="text-xl font-bold">
