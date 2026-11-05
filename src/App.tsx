@@ -4,6 +4,7 @@ import MacroProgress from "./components/MacroProgress";
 import { useState } from "react";
 import type { Food } from "./data/foods";
 
+
 type DiaryEntry = {
   id: string;
   food: Food;
@@ -13,6 +14,12 @@ type DiaryEntry = {
 function App(){
   const dailyCalories = 2100;
   const [diary, setDiary] = useState<DiaryEntry[]>([]);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editGrams, setEditGrams] = useState<string>("");
+
+  const isEditGramsValid = 
+    editGrams.trim() !== "" && Number.isFinite(Number(editGrams)) && Number(editGrams) > 0;
+
 
   function handleAddFood(food: Food, grams: number){
     const newEntry: DiaryEntry = {
@@ -32,6 +39,29 @@ function App(){
 
   function handleDeleteAllFood(){
     setDiary([]);
+  }
+
+  function handleStartEdit(entry: DiaryEntry){
+    setEditingId(entry.id);
+    setEditGrams(String(entry.grams));
+  }
+
+  function handleSaveEdit(){
+    if (editingId === null || !isEditGramsValid){
+      return;
+    }
+
+    setDiary((previous) => 
+      previous.map((entry) =>
+        entry.id === editingId ? {...entry, grams: Number(editGrams)} : entry
+      )
+    );
+
+    setEditingId(null);
+  }
+
+  function handleCancelEdit(){
+    setEditingId(null);
   }
 
 
@@ -132,34 +162,101 @@ function App(){
               {diary.map((entry) => (
                 <li
                   key={entry.id}
-                  className="flex items-center justify-between rounded-xl bg-gray-50 p-4"
+                  className="flex flex-col gap-3 rounded-xl bg-gray-50 p-4 sm:flex-row sm:items-center sm:justify-between"
                 >
-                  <div>
-                    <p className="font-medium">
-                      {entry.food.name}
-                    </p>
+                  {editingId === entry.id ? (
+                    <div className="flex w-full flex-col gap-3 sm:flex-row sm:items-end">
+                      <div className="flex-1">
+                        <label
+                          htmlFor={`edit-${entry.id}`}
+                          className="mb-2 block text-sm font-medium"
+                        >
+                          Izmeni količinu: {entry.food.name}
+                        </label>
 
-                    <p className="mt-1 text-sm text-gray-500">
-                      {entry.grams} g
-                    </p>
-                  </div>
+                        <input
+                          id={`edit-${entry.id}`}
+                          type="number"
+                          min="0"
+                          step="any"
+                          value={editGrams}
+                          onChange={(event) =>
+                            setEditGrams(event.target.value)
+                          }
+                          className="w-full rounded-xl border border-gray-300 bg-white p-3"
+                        />
 
-                  <div className="flex items-center gap-4">
-                      <span className="font-semibold">
-                        {Math.round(
-                          entry.food.calories * (entry.grams / 100)
-                        )} kcal
-                      </span>
+                        <p className="mt-2 text-sm text-gray-500">
+                         {isEditGramsValid ? (
+                          <>
+                            Nova vrednost:{" "}
+                            {Math.round(
+                              (entry.food.calories / 100) * Number(editGrams)
+                            )} kcal 
+                          </>
+                         ) : (
+                          "Unesi ispravnu količinu."
+                         )}
 
-                      <button 
-                        type="button"
-                        onClick={() => handleDeleteFood(entry.id)}
-                        aria-label={`Obriši ${entry.food.name}`}
-                        className="cursor-pointer rounded-lg bg-red-50 px-3 py-2 text-sm font-medium text-red-600 transition-colors hover:bg-red-100">
-                        Obriši
-                      </button>
-                  </div>
-                  
+                        </p>
+                      </div>
+
+                      <div className="flex gap-2">
+                        <button
+                          type="button"
+                          onClick={handleSaveEdit}
+                          disabled={!isEditGramsValid}
+                          className="cursor-pointer rounded-xl bg-[#169b74] px-4 py-3 text-white hover:bg-[#128563] disabled:cursor-not-allowed disabled:opacity-50"
+                        >
+                          Sačuvaj
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={handleCancelEdit}
+                          className="cursor-pointer rounded-xl border border-gray-300 bg-white px-4 py-3 hover:bg-gray-100"
+                        >
+                          Otkaži
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
+                      <div>
+                        <p className="font-medium">
+                          {entry.food.name}
+                        </p>
+
+                        <p className="mt-1 text-sm text-gray-500">
+                          {entry.grams} g
+                        </p>
+                      </div>
+
+                      <div className="flex items-center gap-3">
+                        <span className="font-semibold">
+                          {Math.round(
+                            entry.food.calories * (entry.grams / 100)
+                          )} kcal
+                        </span>
+
+                        <button
+                          type="button"
+                          onClick={() => handleStartEdit(entry)}
+                          className="cursor-pointer rounded-lg bg-green-50 px-3 py-2 text-sm font-medium text-green-700 hover:bg-green-100"
+                        >
+                          Izmeni
+                        </button>
+
+                        <button
+                          type="button"
+                          onClick={() => handleDeleteFood(entry.id)}
+                          className="cursor-pointer rounded-lg bg-red-50 px-3 py-2 text-sm font-medium text-red-600 hover:bg-red-100"
+                        >
+                          Obriši
+                        </button>
+                      </div>
+                    </>
+                  )}
                 </li>
               ))}
             </ul>
