@@ -1,14 +1,17 @@
 import { useState } from "react";
 import { foods } from "../data/foods";
 import type { Food } from "../data/foods";
+import type { Meal } from "../data/meals";
+import { mealOptions } from "../data/meals";
 
 type FoodCalculatorProps = {
-    onAddFood: (food: Food, grams: number) => void;
+    onAddFood: (food: Food, grams: number, meal: Meal) => void;
 }
 
 function FoodCalculator({onAddFood, }: FoodCalculatorProps) {
     const [selectedFoodId, setSelectedFoodId] = useState(1);
     const [grams, setGrams] = useState<string>("100");
+    const [selectedMeal, setSelectedMeal] = useState<Meal>("breakfast");
 
     const selectedFood = foods.find(
         (food) => food.id === selectedFoodId
@@ -71,6 +74,32 @@ function FoodCalculator({onAddFood, }: FoodCalculatorProps) {
                 </div>
             </div>
 
+
+            <div className="mt-4">
+                <label
+                    htmlFor="meal"
+                    className="mb-2 block text-sm font-medium"
+                >
+                    Obrok
+                </label>
+
+                <select
+                    id="meal"
+                    value={selectedMeal}
+                    onChange={(event) =>
+                    setSelectedMeal(event.target.value as Meal)
+                    }
+                    className="w-full rounded-xl border border-gray-300 bg-white p-3"
+                >
+                    {mealOptions.map((meal) => (
+                    <option key={meal.id} value={meal.id}>
+                        {meal.label}
+                    </option>
+                    ))}
+                </select>
+            </div>
+
+
             <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-4">
                 <div className="rounded-xl bg-gray-50 p-4">
                     <p className="text-sm text-gray-500">Kalorije</p>
@@ -93,7 +122,7 @@ function FoodCalculator({onAddFood, }: FoodCalculatorProps) {
                 </div>
             </div>
 
-            <button type="button" onClick={() => onAddFood(selectedFood, gramsNumber)}
+            <button type="button" onClick={() => onAddFood(selectedFood, gramsNumber, selectedMeal)}
                 disabled={!isValidGrams} 
                 className="mt-6 w-full cursor-pointer rounded-xl bg-[#169b74] py-5 py-3 font-medium text-white transition-colors hover:bg-[#128563] disabled:cursor-not-allowed disabled:opacity-50">
                 + Dodaj u dnevnik
