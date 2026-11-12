@@ -6,4 +6,5 @@ export type DiaryEntry = {
     food: Food;
     grams: number;
     meal: Meal;
+    date: string;
 };
