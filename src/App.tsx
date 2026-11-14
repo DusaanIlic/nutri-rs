@@ -3,6 +3,7 @@ import CalorieSummary from "./components/CalorieSummary";
 import FoodCalculator from "./components/FoodCalculator";
 import MacroProgress from "./components/MacroProgress";
 import FoodDiary from "./components/FoodDiary";
+import AppLayout from "./components/layout/AppLayout";
 import type { Food } from "./data/foods";
 import type { Meal } from "./data/meals";
 import type { DiaryEntry } from "./types/diary";
@@ -118,98 +119,105 @@ function App(){
   );
 
   return(
-    <main className="min-h-screen bg-[#f7faf8] px-4 py-8 sm:px-8">
-      <div className="mx-auto max-w-4xl">
+    <AppLayout>
+      <div id="pregled" className="scroll-mt-6">
+          <p className="text-sm font-bold text-[#169b74]">
+            NUTRIRS
+          </p>
 
-        <p className="text-sm font-bold text-[#169b74]">
-          NUTRIRS
-        </p>
+          <h1 className="mt-3 text-3xl font-bold">
+            Jedan dan bliže cilju.
+          </h1>
 
-        <h1 className="mt-3 text-3xl font-bold">
-          Jedan dan bliže cilju.
-        </h1>
+          <p className="mt-2 text-gray-500">
+            Prati svoju ishranu i dnevni napredak.
+          </p>
 
-        <p className="mt-2 text-gray-500">
-          Prati svoju ishranu i dnevni napredak.
-        </p>
-
-        
-        <div className="mt-6 w-full max-w-md">
-          <label
-            htmlFor="selected-date"
-            className="mb-2 block text-sm font-medium"
-          >
-            Izaberi datum
-          </label>
-
-          <div className="flex items-center gap-3">
-            <input
-              id="selected-date"
-              type="date"
-              value={selectedDate}
-              onChange={(event) => {
-                if (event.target.value) {
-                  setSelectedDate(event.target.value);
-                }
-              }}
-              className="min-w-0 flex-1 rounded-xl border border-gray-300 bg-white p-3"
-            />
-
-            <button
-              type="button"
-              onClick={() => setSelectedDate(getLocalDate())}
-              className="shrink-0 cursor-pointer rounded-xl bg-[#169b74] px-5 py-3 text-white transition-colors hover:bg-[#128563]"
+          
+          <div className="mt-6 w-full max-w-md">
+            <label
+              htmlFor="selected-date"
+              className="mb-2 block text-sm font-medium"
             >
-              Danas
-            </button>
+              Izaberi datum
+            </label>
+
+            <div className="flex items-center gap-3">
+              <input
+                id="selected-date"
+                type="date"
+                value={selectedDate}
+                onChange={(event) => {
+                  if (event.target.value) {
+                    setSelectedDate(event.target.value);
+                  }
+                }}
+                className="min-w-0 flex-1 rounded-xl border border-gray-300 bg-white p-3"
+              />
+
+              <button
+                type="button"
+                onClick={() => setSelectedDate(getLocalDate())}
+                className="shrink-0 cursor-pointer rounded-xl bg-[#169b74] px-5 py-3 text-white transition-colors hover:bg-[#128563]"
+              >
+                Danas
+              </button>
+            </div>
           </div>
         </div>
 
-        <CalorieSummary
-          target={dailyCalories}
-          consumed={Math.round(totals.calories)}
-        />
+        <div className="mt-8 grid gap-6 xl:grid-cols-2">
 
-        <section className="mt-6 rounded-3xl bg-white p-6 shadow-sm sm:p-8">
-          <h2 className="text-xl font-bold">
-            Makronutrijenti
-          </h2>
+          <CalorieSummary
+            target={dailyCalories}
+            consumed={Math.round(totals.calories)}
+          />
 
-          <div className="mt-6 space-y-6">
-            <MacroProgress 
-              label="Proteini"
-              consumed={Number(totals.protein.toFixed(1))}
-              target={140}
-              color="#159d82"
-            />
+          <section className="mt-6 rounded-3xl bg-white p-6 shadow-sm sm:p-8">
+            <h2 className="text-xl font-bold">
+              Makronutrijenti
+            </h2>
 
-            <MacroProgress 
-              label="Ugljeni hidrati"
-              consumed={Number(totals.carbs.toFixed(1))}
-              target={250}
-              color="#e6a75c"
-            />
+            <div className="mt-6 space-y-6">
+              <MacroProgress 
+                label="Proteini"
+                consumed={Number(totals.protein.toFixed(1))}
+                target={140}
+                color="#159d82"
+              />
 
-            <MacroProgress 
-              label="Masti"
-              consumed={Number(totals.fat.toFixed(1))}
-              target={70}
-              color="#9674d1"
-            />
-          </div>
+              <MacroProgress 
+                label="Ugljeni hidrati"
+                consumed={Number(totals.carbs.toFixed(1))}
+                target={250}
+                color="#e6a75c"
+              />
 
-        </section>
+              <MacroProgress 
+                label="Masti"
+                consumed={Number(totals.fat.toFixed(1))}
+                target={70}
+                color="#9674d1"
+              />
+            </div>
 
-        <FoodCalculator onAddFood={handleAddFood}/>
+          </section>
 
-        <FoodDiary
-          entries={selectedDayEntries}
-          onDelete={handleDeleteFood}
-          onDeleteAll={handleDeleteAllFood}
-          onUpdate={handleUpdateFood}
-        />
-      </div>
-    </main>
+        </div>
+
+        <div id="namirnice" className="scroll-mt-6">
+          <FoodCalculator onAddFood={handleAddFood} />
+        </div>
+
+        <div id="dnevnik" className="scroll-mt-6">
+          <FoodDiary
+            entries={selectedDayEntries}
+            onDelete={handleDeleteFood}
+            onDeleteAll={handleDeleteAllFood}
+            onUpdate={handleUpdateFood}
+          />
+        </div>
+    </AppLayout>
   );
 }
 

@@ -14,9 +14,9 @@ function CalorieSummary({
     const progress = Math.min(Math.max(percentage, 0), 100);
 
     return(
-        <section className="mt-8 rounded-3xl bg-[#124638] p-6 text-white shadow-lg sm:p-8">
+        <section className="h-full rounded-3xl bg-[#124638] p-6 text-white shadow-lg sm:p-8">
             <p className="text-sm text-white/70">
-                Danas uneto kalorija
+                Uneto kalorija
             </p>
     
             <div className="mt-4 flex items-baseline gap-3">
